@@ -13,8 +13,10 @@ from Agent import Agent
 from HybridLinUCB import HybridUCB
 import numpy as np
 from Result import *
+from math import *
 
 def addAgent(id, bandit, agents, minLight, iota, pVal, features):
+    print 'Adding agent with minlight:', minLight, ' iota:', iota, ' and p:', pVal
     agents[id] = Agent(minLight, iota, pVal)
     bandit.addArm(id, 1)
     features[id] = iota
@@ -24,20 +26,22 @@ def main():
     armFeatures = dict()
     bandit = HybridUCB(0.3, 1)
 
+    
     agentID = 0
-    addAgent(agentID, bandit, agents, 1, 4, 0.2, armFeatures)
-    agentID += 1
-    addAgent(agentID, bandit, agents, 1, 8, 0.6, armFeatures)
-    agentID += 1
-    addAgent(agentID, bandit, agents, 1, 16, 0.9, armFeatures)
-
-    horizon = 1000
+    maxArms = 10
+    
+    for ii in range(maxArms):
+        addAgent(agentID, bandit, agents, float(maxArms - ii)/maxArms, pow(2,ii), float(ii)/maxArms, armFeatures)
+        agentID += 1
+    
+        
+    horizon = 2000
     result = Result(len(agents), horizon)
     
     for ii in range(horizon):
-        #Determine the light level (ranges from 0 to 10):
+        #Determine the light level (ranges from 0 to 1):
         #This is the environmental feature
-        lightLevel = np.random.rand(1) * 10
+        lightLevel = np.random.rand(1)
 
         #armFeatures has the arm-specific feature vectors (in this case, the iota values)
         armChoice = bandit.select(lightLevel, armFeatures)
