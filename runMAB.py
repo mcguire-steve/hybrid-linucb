@@ -55,11 +55,9 @@ def main():
     results = dict()
     results['bandit'] = Result(len(agents), horizon)
     results['random'] = Result(len(agents), horizon)
-    results['static'] = Result(len(agents), horizon)
-    
-    resultBandit = Result(len(agents), horizon)
-    resultRandom = Result(len(agents), horizon)
-    
+    results['static5'] = Result(len(agents), horizon)
+    results['static2'] = Result(len(agents), horizon)
+
     for ii in range(horizon):
         #Determine the light level (ranges from 0 to 1):
         #This is the environmental feature
@@ -92,12 +90,18 @@ def main():
 
 
         #Run a static selection of a sub-optimal choice
-        armChoice = 4
+        armChoice = 5
         #Issue the request to the chosen arm
         armOutput = agents[armChoice].service(lightLevel)
         productivity = armOutput[0] / armOutput[1]
-        results['static'].store(ii, armChoice, productivity)
-        
+        results['static5'].store(ii, armChoice, productivity)
+
+        #Run a static selection of a sub-optimal choice
+        armChoice = 2
+        #Issue the request to the chosen arm
+        armOutput = agents[armChoice].service(lightLevel)
+        productivity = armOutput[0] / armOutput[1]
+        results['static2'].store(ii, armChoice, productivity)
         #Remove an arm in the middle of the horizon
         
         if ii == int(horizon/2):
@@ -114,20 +118,6 @@ def main():
         print banditType, ' pulls:', results[banditType].getNbPulls()
         print 'Net ', banditType, ' productivity:', np.sum(results[banditType].rewards)
         appendResults(results[banditType], 'output_%s.csv' % banditType)
-'''
-    print 'Bandit Pulls:', results['bandit'].getNbPulls()
-    print 'Random Pulls:', results['random'].getNbPulls()
-    print 'Static Pulls:', results['static'].getNbPulls()
 
-    #for ii in range(len(agents)):
-    #    print 'Regret for agent', ii, ':', result.getRegret(agents[ii].pVal)
-    print 'Net bandit productivity:', np.sum(results['bandit'].rewards)
-    print 'Net random productivity:', np.sum(results['random'].rewards)
-
-    #Append to time history file
-    appendResults(results['bandit'], 'output_bandit.csv')
-    appendResults(results['random'], 'output_random.csv')
-    appendResults(results['static'], 'output_static.csv')
-'''
 if __name__=='__main__':
     main()
