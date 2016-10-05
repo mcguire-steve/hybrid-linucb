@@ -13,7 +13,7 @@ class Result:
         self.nbArms = nbArms
         self.choices = np.zeros(horizon)
         self.rewards = np.zeros(horizon)
-    
+        self.maxT = 0
     def store(self, t, choice, reward):
         if t >= self.choices.shape[0]:
             np.append(self.choices, choice)
@@ -21,16 +21,26 @@ class Result:
         else:
             self.choices[t] = choice
             self.rewards[t] = reward
-    
+            self.maxT = t
     def getNbPulls(self):
         if (self.nbArms==float('inf')):
             self.nbPulls=np.array([])
             pass
         else :
+
+            #This needs to be adjusted to support the case when an arm is removed in the middle of a run -
+            #Ahh - when asking for interim results, the zero default is reckoned with arm 0 as well...
             nbPulls = np.zeros(self.nbArms)
-            for choice in self.choices:
-                nbPulls[choice] += 1
+            #nbPulls = dict()
+            #print 'Choices:', self.choices
+            for t in range(self.maxT):
+                nbPulls[self.choices[t]] += 1
             return nbPulls
     
     def getRegret(self, bestExpectation):
         return np.cumsum(bestExpectation-self.rewards)
+
+    def getTimeHistoryRow(self):
+        #Restructure the .rewards array as a list row, indexed by timestep
+        #Output for Matlab scripts to analyze...
+        return np.cumsum(self.rewards).tolist()

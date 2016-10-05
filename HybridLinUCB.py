@@ -75,6 +75,7 @@ class HybridUCB:
     def removeArm(self, id):
         try:
             del self.arms[id]
+            #print 'Removed arm: ', id
         except KeyError:
             print 'Attempted to remove nonexisted arm id', id
             
@@ -95,7 +96,10 @@ class HybridUCB:
 
         #Choose arm with max P, ties broken arbitrarily
         #http://stackoverflow.com/questions/268272/getting-key-with-maximum-value-in-dictionary
+
+
         self.currentArm = self.arms[max(bestP, key=lambda k: bestP[k])]
+
         return self.currentArm.getID()
         
     def update(self, reward):
