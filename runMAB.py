@@ -47,7 +47,7 @@ def main():
     maxArms = 5
     
     for ii in range(maxArms):
-        addAgent(agentID, bandit, agents, float(maxArms - ii)/maxArms, pow(4,ii), float(ii)/maxArms, armFeatures)
+        addAgent(agentID, bandit, agents, float(maxArms - ii - 1)/maxArms, pow(4,ii), float(ii+1)/maxArms, armFeatures)
         agentID += 1
     
         
