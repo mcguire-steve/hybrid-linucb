@@ -44,10 +44,10 @@ def main():
 
     
     agentID = 0
-    maxArms = 10
+    maxArms = 5
     
     for ii in range(maxArms):
-        addAgent(agentID, bandit, agents, float(maxArms - ii)/maxArms, pow(2,ii), float(ii)/maxArms, armFeatures)
+        addAgent(agentID, bandit, agents, float(maxArms - ii)/maxArms, pow(4,ii), float(ii)/maxArms, armFeatures)
         agentID += 1
     
         
@@ -58,7 +58,7 @@ def main():
     results['static'] = Result(len(agents), horizon)
     #results['static2'] = Result(len(agents), horizon)
 
-    staticChoice = 3
+    staticChoice = 1
     for ii in range(horizon):
         #Determine the light level (ranges from 0 to 1):
         #This is the environmental feature
@@ -110,17 +110,16 @@ def main():
         #Remove an arm in the middle of the horizon
         
         if ii == int(horizon/2):
-            print 'Removing agent 3'
-            removeAgent(3, bandit, agents, armFeatures)
+            print 'Removing agent ', staticChoice
+            removeAgent(staticChoice, bandit, agents, armFeatures)
             print 'Changing static choice to adjust'
-            staticChoice = 6
-            '''
-            print 'Bandit Pulls:', resultBandit.getNbPulls()
-            print 'Random Pulls:', resultRandom.getNbPulls()
-            print 'Net bandit productivity:', np.sum(resultBandit.rewards)
-            print 'Net random productivity:', np.sum(resultRandom.rewards)
-            '''
+            staticChoice = 4
+            for banditType in results.keys():
+                print banditType, ' pulls:', results[banditType].getNbPulls()
+
+            
     #Interpret and save results:
+    print 'Final results:'
     for banditType in results.keys():
         print banditType, ' pulls:', results[banditType].getNbPulls()
         print 'Net ', banditType, ' productivity:', np.sum(results[banditType].rewards)
