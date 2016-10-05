@@ -73,7 +73,7 @@ def main():
         armOutput = agents[armChoice].service(lightLevel)
 
         #Update the bandit with the outcome
-        productivity = armOutput[0] #/ armOutput[1]
+        productivity = armOutput[1] #/ armOutput[1]
         bandit.update(productivity) 
         productivity = armOutput[0] / armOutput[1]
         #Store result
