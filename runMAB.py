@@ -51,13 +51,14 @@ def main():
         agentID += 1
     
         
-    horizon = 3000
+    horizon = 2000
     results = dict()
     results['bandit'] = Result(len(agents), horizon)
     results['random'] = Result(len(agents), horizon)
-    results['static5'] = Result(len(agents), horizon)
-    results['static2'] = Result(len(agents), horizon)
+    results['static'] = Result(len(agents), horizon)
+    #results['static2'] = Result(len(agents), horizon)
 
+    staticChoice = 3
     for ii in range(horizon):
         #Determine the light level (ranges from 0 to 1):
         #This is the environmental feature
@@ -90,23 +91,29 @@ def main():
 
 
         #Run a static selection of a sub-optimal choice
-        armChoice = 5
+        armChoice = staticChoice
         #Issue the request to the chosen arm
         armOutput = agents[armChoice].service(lightLevel)
         productivity = armOutput[0] / armOutput[1]
-        results['static5'].store(ii, armChoice, productivity)
+        results['static'].store(ii, armChoice, productivity)
 
+        '''
         #Run a static selection of a sub-optimal choice
         armChoice = 2
         #Issue the request to the chosen arm
         armOutput = agents[armChoice].service(lightLevel)
         productivity = armOutput[0] / armOutput[1]
         results['static2'].store(ii, armChoice, productivity)
+        '''
+
+        #Alter arm composition in the middle of the test
         #Remove an arm in the middle of the horizon
         
         if ii == int(horizon/2):
             print 'Removing agent 3'
             removeAgent(3, bandit, agents, armFeatures)
+            print 'Changing static choice to adjust'
+            staticChoice = 6
             '''
             print 'Bandit Pulls:', resultBandit.getNbPulls()
             print 'Random Pulls:', resultRandom.getNbPulls()

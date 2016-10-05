@@ -43,4 +43,4 @@ class Result:
     def getTimeHistoryRow(self):
         #Restructure the .rewards array as a list row, indexed by timestep
         #Output for Matlab scripts to analyze...
-        return np.cumsum(self.rewards).tolist()
+        return self.rewards.tolist()
